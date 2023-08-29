@@ -35,6 +35,7 @@ public class Board extends JPanel implements ActionListener {
     private Image head;
 
     public Board(){
+        initGame();
     }
 
     private void initBoard(){
@@ -73,6 +74,65 @@ public class Board extends JPanel implements ActionListener {
 
         timer = new Timer(DELAY, this);
         timer.start();
+    }
+
+    private void doDrawing(Graphics g){
+        if(inGame){
+
+            g.drawImage(apple, apple_x, apple_y, this);
+
+            for(int z = 0; z < dots; z++){
+                if(z == 0){
+                    g.drawImage(head, x[z], y[z], this);
+                }else{
+                    g.drawImage(ball, x[z], y[z], this);
+                }
+            }
+            Toolkit.getDefaultToolkit().sync();
+        }
+    }
+
+    private void gameOver(Graphics g){
+
+        String msg = "Game Over";
+        Font small = new Font("Helvetica", Font.BOLD, 14);
+        FontMetrics metr = getFontMetrics(small);
+
+        g.setColor(Color.white);
+        g.setFont(small);
+        g.drawString(msg, (B_WIDTH - metr.stringWidth(msg)) / 2, B_HEIGHT / 2);
+    }
+
+    private void checkApple(){
+
+        if((x[0] == apple_x) && (y[0] == apple_y)){
+            dots++;
+            locateApple();
+        }
+    }
+
+    private void move(){
+
+        for(int z = dots; z > 0; z--){
+            x[z] = x[(z - 1)];
+            y[z] = y[(z - 1)];
+        }
+
+        if (leftDirection) {
+            x[0] -= DOT_SIZE;
+        }
+
+        if (rightDirection) {
+            x[0] += DOT_SIZE;
+        }
+
+        if (upDirection) {
+            y[0] -= DOT_SIZE;
+        }
+
+        if (downDirection) {
+            y[0] += DOT_SIZE;
+        }
     }
 
     private void checkCollision(){
@@ -119,6 +179,13 @@ public class Board extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        if(inGame){
+            checkApple();
+            checkCollision();
+            move();
+        }
+        repaint();
     }
 
     private class TAdapter extends KeyAdapter{
