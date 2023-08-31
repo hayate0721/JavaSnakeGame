@@ -35,7 +35,7 @@ public class Board extends JPanel implements ActionListener {
     private Image head;
 
     public Board(){
-        initGame();
+        initBoard();
     }
 
     private void initBoard(){
@@ -89,8 +89,18 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
             Toolkit.getDefaultToolkit().sync();
+        }else{
+            gameOver(g);
         }
     }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        doDrawing(g);
+    }
+
 
     private void gameOver(Graphics g){
 
